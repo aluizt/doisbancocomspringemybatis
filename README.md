@@ -1,7 +1,10 @@
 ### Utilizando dois banco de dados com Spring e MyBatis.
 
-Primeiro vamos adicionar no arquivo application-dev.yml as configurações dos dois bancos, no exemplo serão dois bancos Oracle.
-```
+Neste exemplo irei demostrar como utilizar dois banco de dados com o Spring mais o framework MyBatis.
+Seram dois bancos de dados Oracle, contendo as mesmas tabelas apenas para facilitar o entendimento.
+
+Primeiro vamos adicionar no arquivo application-dev.yml as configurações dos dois bancos.
+```  
 spring:
   application:
     name: doisbancodedados
@@ -84,3 +87,78 @@ Criaremos um metodo que ira dos retornar um DataSouce, para isto utilizaremos a 
     }
     
  ``` 
+ 
+Precisamos de um SqlSessionFactory, um DataSourceTransactionManage e um SqlSessionTemplate para isso criamos os metodos abaixo informando qual o nome do dataSource através da anotação @Qualifier
+ 
+ ```
+     @Bean(name = "banco1SessionFactory")
+    @Primary
+    public SqlSessionFactory banco1SessionFactory(@Qualifier("banco1DataSource") final DataSource banco1DataSource) throws Exception {
+        final SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
+        sqlSessionFactoryBean.setDataSource(banco1DataSource);
+        return sqlSessionFactoryBean.getObject();
+    }
+    
+    @Bean(name = "banco1TransactionManager")
+    @Primary
+    public DataSourceTransactionManager banco1TransactionManager(@Qualifier("banco1DataSource") DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
+    }
+
+    @Bean(name = "banco1SessionTemplate")
+    @Primary
+    public SqlSessionTemplate banco1SessionTemplate(@Qualifier("banco1SessionFactory") SqlSessionFactory sqlSessionFactory) {
+        return new SqlSessionTemplate(sqlSessionFactory);
+    }
+ ``` 
+ 
+ Agora que temos nossos banco configurados, vamos criar uma inteface para busca um produto através de um id, lembrando que este é um exemplo simples, apenas com o objetivo de demostrar a utilizados de dois bancos de dados através do Spring.
+ 
+ ```  
+@Mapper
+public interface ProdutoRepository {
+
+    @Select("SELECT * FROM PRODUTO WHERE CODIGO_PRODUTO = #{codigoProduto}")
+    ProdutoModel buscarProduto(@Param("codigoProduto") Long codigoProduto);
+}
+```
+
+Apos iremos criar as interfaces que irão extender a inteface criada acima.
+
+```
+@Mapper
+public interface Banco1ProdutoRepository extends ProdutoRepository {
+}
+```  
+```
+@Mapper
+public interface Banco2ProdutoRepository extends ProdutoRepository {
+}
+``` 
+
+Desta forma quando for necessários salva do banco 1, apenas utilizamos a inteface Banco1ProdutoRepository, caso queiramos utilizar o banco 2 utilizaremos a interface Banco2ProdutoRepository, como no exemplo abaixo.
+
+```
+@SpringBootApplication
+@Log4j2
+public class DoisbancodedadosApplication {
+
+    Banco1ProdutoRepository banco1ProdutoRepository;
+    Banco2ProdutoRepository banco2ProdutoRepository;
+
+    public static void main(String[] args) {
+        SpringApplication.run(DoisbancodedadosApplication.class, args);
+    }
+
+    @PostConstruct
+    public void teste() {
+        log.info("Produto do banco 1 : " + banco1ProdutoRepository.buscarProduto(101L));
+        log.info("Produto do banco 2 : " + banco2ProdutoRepository.buscarProduto(101L));
+    }
+}
+
+```
+
+
+ 
+ 
