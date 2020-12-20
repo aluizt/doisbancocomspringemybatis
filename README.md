@@ -18,3 +18,45 @@ datasource:
     driver-class-name: oracle.jdbc.driver.OracleDriver
 
 ``` 
+
+Apos adicionar as configurações dos banco, vamos criar nossas classes de configuração para cada um dos bancos utilizados.
+
+#### Banco1
+```
+@Configuration
+@MapperScan(
+        basePackages = "br.com.doisbanco.doisbancodedados.repository.banco1",
+        sqlSessionTemplateRef = "banco1SessionTemplate"
+)
+public class Banco1MyBatisConfiguration {
+
+    @Bean(name = "banco1DataSource")
+    @ConfigurationProperties(prefix = "datasource.banco1")
+    @Primary
+    public DataSource banco1DataSource() {
+        return new HikariDataSource();
+    }
+
+    @Bean(name = "banco1SessionFactory")
+    @Primary
+    public SqlSessionFactory banco1SessionFactory(@Qualifier("banco1DataSource") final DataSource banco1DataSource) throws Exception {
+        final SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
+        sqlSessionFactoryBean.setDataSource(banco1DataSource);
+        return sqlSessionFactoryBean.getObject();
+    }
+
+    @Bean(name = "banco1TransactionManager")
+    @Primary
+    public DataSourceTransactionManager banco1TransactionManager(@Qualifier("banco1DataSource") DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
+    }
+
+    @Bean(name = "banco1SessionTemplate")
+    @Primary
+    public SqlSessionTemplate banco1SessionTemplate(@Qualifier("banco1SessionFactory") SqlSessionFactory sqlSessionFactory) {
+        return new SqlSessionTemplate(sqlSessionFactory);
+    }
+
+}
+
+``` 
