@@ -112,7 +112,7 @@ Precisamos de um SqlSessionFactory, um DataSourceTransactionManage e um SqlSessi
     }
  ``` 
  
- Agora que temos nossos banco configurados, vamos criar uma inteface para busca um produto através de um id, lembrando que este é um exemplo simples, apenas com o objetivo de demostrar a utilizados de dois bancos de dados através do Spring.
+ Agora que temos nossos banco configurados, vamos criar uma inteface para buscar um produto através de um id, lembrando que este é um exemplo simples, apenas com o objetivo de demostrar a utilização de dois bancos de dados através do Spring.
  
  ```  
 @Mapper
