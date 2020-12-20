@@ -64,7 +64,7 @@ public class Banco1MyBatisConfiguration {
 
 ```
 
-Utilizamos @MapperScan para informar onde estara os repositories que iram acessar este banco, e também definimos o nome da nossa SqlSessionTemplateRef
+Utilizamos @MapperScan para informar onde estara os repositories que irão acessar este banco, e também definimos o nome da nossa SqlSessionTemplateRef
 
 ```
 
@@ -136,7 +136,7 @@ public interface Banco2ProdutoRepository extends ProdutoRepository {
 }
 ``` 
 
-Desta forma quando for necessários salva do banco 1, apenas utilizamos a inteface Banco1ProdutoRepository, caso queiramos utilizar o banco 2 utilizaremos a interface Banco2ProdutoRepository, como no exemplo abaixo.
+Desta forma quando for necessários salvar do banco 1, apenas utilizamos a inteface Banco1ProdutoRepository, caso queiramos utilizar o banco 2 utilizaremos a interface Banco2ProdutoRepository, como no exemplo abaixo.
 
 ```
 @SpringBootApplication
