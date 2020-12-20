@@ -59,4 +59,28 @@ public class Banco1MyBatisConfiguration {
 
 }
 
-``` 
+```
+
+Utilizamos @MapperScan para informar onde estara os repositories que iram acessar este banco, e também definimos o nome da nossa SqlSessionTemplateRef
+
+```
+
+@MapperScan(
+        basePackages = "br.com.doisbanco.doisbancodedados.repository.banco1",
+        sqlSessionTemplateRef = "banco1SessionTemplate"
+)
+
+```  
+
+Criaremos um metodo que ira dos retornar um DataSouce, para isto utilizaremos a notação @ConfigurationProperties com o prefix igual ao datasouce que configuramos no arquivo application-dev.yml
+
+```  
+
+    @Bean(name = "banco1DataSource")
+    @ConfigurationProperties(prefix = "datasource.banco1")
+    @Primary
+    public DataSource banco1DataSource() {
+        return new HikariDataSource();
+    }
+    
+ ``` 
