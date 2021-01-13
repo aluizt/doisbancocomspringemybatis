@@ -1,7 +1,7 @@
 ### Utilizando dois banco de dados com Spring e MyBatis.
 
 Neste exemplo irei demostrar como utilizar dois banco de dados com o Spring mais o framework MyBatis.
-Seram dois bancos de dados Oracle, contendo as mesmas tabelas apenas para facilitar o entendimento.
+Serão dois bancos de dados Oracle, contendo as mesmas tabelas apenas para facilitar o entendimento.
 
 Primeiro vamos adicionar no arquivo application-dev.yml as configurações dos dois bancos.
 ```  
